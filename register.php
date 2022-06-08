@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       // Verbindung schliessen
       $mysqli->close();
       // Weiterleiten auf login.php
-      header('Location: /session/login.php');
+      header('Location: /151_projektarbeit/login.php');
       // beenden des Scriptes
       exit();
     }

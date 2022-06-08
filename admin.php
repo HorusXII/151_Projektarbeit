@@ -6,7 +6,7 @@ session_start();
 $error = $message = '';
 
 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
-    header('Location: /session/login.php');
+    header('Location: /151_projektarbeit/login.php');
     die();
 } else {
     $message .= "Hallo {$_SESSION['username']}";
