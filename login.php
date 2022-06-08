@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				session_regenerate_id(true);
 
 				// TODO - weiterleiten auf admin.php
-				header("location: /session/admin.php" );
+				header("location: /151_projektarbeit/admin.php" );
 				// TODO - Script beenden
 				exit();
 

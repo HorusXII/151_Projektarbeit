@@ -5,5 +5,5 @@ session_start();
 $_SESSION = array();
 session_destroy();
 // TODO - Weiterleiten auf login.php
-header('Location: /session/login.php');
+header('Location: /151_projektarbeit/login.php');
 ?>
