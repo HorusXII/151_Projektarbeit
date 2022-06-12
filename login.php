@@ -115,10 +115,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<ul class="navbar-nav mr-auto">
 			<?php
 				if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-					echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
 					echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>'; 
 				} else {
-					echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+					header('Location: /151_projektarbeit/admin.php');
 				}
 			?>
 			</ul>
@@ -136,6 +135,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		} else if (!empty($error)) {
 			echo "<div class=\"alert alert-danger\" role=\"alert\">" . $error . "</div>";
 		}
+
+
+		
 		?>
 		<form action="" method="POST">
 			<div class="form-group">

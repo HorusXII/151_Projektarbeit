@@ -159,20 +159,29 @@ if($row != NULL){
         
         <?php
         if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-          echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>'; 
+          echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
+          $admin=0;
         } else {
-          echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>';
+          $admin=1;
         }
         ?>
       </ul>
     </div>
   </nav>
   <div class="container">
-    <h1>Registrierung</h1>
-    <p>
-      Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.
-    </p>
+    <?php
+          if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
+            echo '<h1>Registrierung</h1>';
+            echo  '<p> Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.</p>';
+            $admin=0;
+          } else {
+            echo '<h1> Neuer Benutzer </h1>';
+            echo  '<p> Erstellen sie einen neuen Benutzer ihren wünschen entsprechend.</p>';
+            $admin=1;
+          }
+        ?>
     <?php
     // Ausgabe der Fehlermeldungen
     if (!empty($error)) {
