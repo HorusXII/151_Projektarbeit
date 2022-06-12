@@ -31,12 +31,13 @@ SET time_zone = "+00:00";
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `image` blob NOT NULL,
-  `firstname` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `lastname` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `Admin` tinyint(1) NOT NULL
+  `firstname` varchar(30) NOT NULL,
+  `lastname` varchar(30) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `Admin` tinyint(1) NOT NULL,
+  `creator` VARCHAR(30) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

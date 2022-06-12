@@ -77,6 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $error .= "Geben Sie bitte ein Password ein.<br />";
   }
 
+//Check if username already exists.
+$ckeckquery = "SELECT * FROM `users` WHERE username=?";
+$stmt = $mysqli->prepare($ckeckquery);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+if($row != NULL){
+    $error .= "Benutzername bereits vorhanden, bitte wählen sie einen anderen.";
+}
+
+
   // wenn kein Fehler vorhanden ist, schreiben der Daten in die Datenbank
   if (empty($error)) {
     // Password haschen
@@ -102,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     // kein Fehler!
+    
     if (empty($error)) {
       $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
       // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
