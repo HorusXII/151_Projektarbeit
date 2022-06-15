@@ -77,6 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $error .= "Geben Sie bitte ein Password ein.<br />";
   }
 
+//Check if username already exists.
+$ckeckquery = "SELECT * FROM `users` WHERE username=?";
+$stmt = $mysqli->prepare($ckeckquery);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+if($row != NULL){
+    $error .= "Benutzername bereits vorhanden, bitte wählen sie einen anderen.";
+}
+
+
   // wenn kein Fehler vorhanden ist, schreiben der Daten in die Datenbank
   if (empty($error)) {
     // Password haschen
@@ -102,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     // kein Fehler!
+    
     if (empty($error)) {
       $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
       // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
@@ -145,20 +159,29 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         
         <?php
         if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-          echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>'; 
+          echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
+          $admin=0;
         } else {
-          echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>';
+          $admin=1;
         }
         ?>
       </ul>
     </div>
   </nav>
   <div class="container">
-    <h1>Registrierung</h1>
-    <p>
-      Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.
-    </p>
+    <?php
+          if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
+            echo '<h1>Registrierung</h1>';
+            echo  '<p> Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.</p>';
+            $admin=0;
+          } else {
+            echo '<h1> Neuer Benutzer </h1>';
+            echo  '<p> Erstellen sie einen neuen Benutzer ihren wünschen entsprechend.</p>';
+            $admin=1;
+          }
+        ?>
     <?php
     // Ausgabe der Fehlermeldungen
     if (!empty($error)) {

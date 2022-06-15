@@ -2,7 +2,7 @@
 
 // TODO - mit eigener Datenbak verbinden
 $host = 'localhost';
-$username = 'TestUser';
+$username = 'DbUser';
 $password = 'password1234';
 $database = '151_projektarbeit';
 
