@@ -53,10 +53,9 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
         // Ausgabe der Fehlermeldungen
         if (!empty($error)) {
             echo "<div class=\"alert alert-danger\" role=\"alert\">" . $error . "</div>";
-        }else{
-            $query = "SELECT * FROM `users`";
+        }else{   
+            $query = "SELECT * FROM `users` WHERE creator=".$_SESSION['userid'];
             $result = $mysqli->query($query);
-            
          }
         ?>
         <table class="table">
@@ -64,11 +63,13 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
                 <th>Vorname</th>
                 <th>Nachname</th>
                 <th>E-Mail</th>
+                <th>Edit</th>
+                <th>Löschen</th>
             </tr>
             <?php
             while($row = $result->fetch_assoc()){
                 echo "</tr>";
-                echo "<td>" . $row['firstname'] ."</td>". "<td>" . $row['lastname'] . "</td>". "<td>" . $row['email'] . "</td>";
+                echo "<td>" . $row['firstname'] ."</td>". "<td>" . $row['lastname'] . "</td>". "<td>" . $row['email'] . "</td> <td>"."<a href='edit.php?id=".$row['id']."'> Edit </a> <td> <a href='delete.php?id=".$row['id']."'> löschen </a></td>";
                 echo "</tr>";
             
             }

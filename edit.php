@@ -4,78 +4,26 @@
 session_start();
 // Datenbankverbindung
 include('include/dbconnector.inc.php');
+if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin'] or !isset($_GET["id"]) or !is_numeric($_GET["id"]))  {
+    header('Location: /151_projektarbeit/overview.php');
+}
 
 // Initialisierung
 $error = $message =  '';
 $firstname = $lastname = $email = $username = $password =  '';
 
-// Wurden Daten mit "POST" gesendet?
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
-  // Vorname ausgefüllt?
-  if (isset($_POST['firstname'])) {
-    //trim and sanitize
-    $firstname = htmlspecialchars(trim($_POST['firstname']));
-
-    //mindestens 1 Zeichen und maximal 30 Zeichen lang
-    if (empty($firstname) || strlen($firstname) > 30) {
-      $error .= "Geben Sie bitte einen korrekten Vornamen ein.<br />";
+if (empty($error)) {
+    $query = "UPDATE user SET firstname = ?, lastname = ?,username = ?, password = ?, WHERE id = ? and creator = ?";
+    $stmt = $mysqli->prepare($query);
+    
+    $stmt->bind_param("ssssii", $firstname, $lastname, $username, $password, $_GET["id"], $_SESSION["userid"]);
+    
+    if (!$stmt->execute()) {
+        $error .= 'execute() failed ' . $mysqli->error . '<br />';
+    } else {
+        $message .= 'Datensatz erfolgreich geändert.';
     }
-  } else {
-    $error .= "Geben Sie bitte einen Vornamen ein.<br />";
-  }
-
-  // Nachname ausgefüllt?
-  if (isset($_POST['lastname'])) {
-    //trim and sanitize
-    $lastname = htmlspecialchars(trim($_POST['lastname']));
-
-    //mindestens 1 Zeichen und maximal 30 Zeichen lang
-    if (empty($lastname) || strlen($lastname) > 30) {
-      $error .= "Geben Sie bitte einen korrekten Nachname ein.<br />";
-    }
-  } else {
-    $error .= "Geben Sie bitte einen Nachname ein.<br />";
-  }
-
-  // Email ausgefüllt?
-  if (isset($_POST['email'])) {
-    //trim an sanitize
-    $email = htmlspecialchars(trim($_POST['email']));
-
-    //mindestens 1 Zeichen und maximal 100 Zeichen lang, gültige Emailadresse
-    if (empty($email) || strlen($email) > 100 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-      $error .= "Geben Sie bitte eine korrekten Emailadresse ein.<br />";
-    }
-  } else {
-    $error .= "Geben Sie bitte eine Emailadresse ein.<br />";
-  }
-
-  // Username ausgefüllt?
-  if (isset($_POST['username'])) {
-    //trim and sanitize
-    $username = htmlspecialchars(trim($_POST['username']));
-
-    //mindestens 1 Zeichen , entsprich RegEX
-    if (empty($username) || !preg_match("/(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,30}/", $username)) {
-      $error .= "Geben Sie bitte einen korrekten Usernamen ein.<br />";
-    }
-  } else {
-    $error .= "Geben Sie bitte einen Username ein.<br />";
-  }
-
-  // Passwort ausgefüllt
-  if (isset($_POST['password'])) {
-    //trim and sanitize
-    $password = trim($_POST['password']);
-
-    //mindestens 1 Zeichen , entsprich RegEX
-    if (empty($password) || !preg_match("/(?=^.{8,255}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/", $password)) {
-      $error .= "Geben Sie bitte einen korrektes Password ein.<br />";
-    }
-  } else {
-    $error .= "Geben Sie bitte ein Password ein.<br />";
-  }
 
 //Check if username already exists.
 $ckeckquery = "SELECT * FROM `users` WHERE username=?";
@@ -147,7 +95,7 @@ if($row != NULL){
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registrierung</title>
+  <title>Bearbeiten</title>
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -180,16 +128,16 @@ if($row != NULL){
   </nav>
   <div class="container">
     <?php
-          if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-            echo '<h1>Registrierung</h1>';
-            echo  '<p> Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.</p>';
-            $admin=0;
-          } else {
-            echo '<h1> Neuer Benutzer </h1>';
-            echo  '<p> Erstellen sie einen neuen Benutzer ihren wünschen entsprechend.</p>';
-            $admin=1;
-          }
-        ?>
+    $id = htmlspecialchars($_GET["id"]);
+    $query = "SELECT * FROM `users` WHERE id=".$id;
+    $result = $mysqli->query($query);
+    $User = $result->fetch_assoc();
+    $firstname = $User['firstname'];
+    $lastname = $User['lastname'];
+    $email = $User['email'];
+    $username = $User['username'];
+
+    ?>
     <?php
     // Ausgabe der Fehlermeldungen
     if (!empty($error)) {
@@ -197,36 +145,39 @@ if($row != NULL){
     } else if (!empty($message)) {
       echo "<div class=\"alert alert-success\" role=\"alert\">" . $message . "</div>";
     }
+    
     ?>
     <form action="" method="post">
       <!-- vorname -->
       <div class="form-group">
         <label for="firstname">Vorname *</label>
-        <input type="text" name="firstname" class="form-control" id="firstname" value="<?php echo $firstname ?>" placeholder="Geben Sie Ihren Vornamen an." maxlength="30" required="true">
+        <input type="text" name="firstname" class="form-control" id="firstname" value="<?php echo $firstname ?>" maxlength="30" required="true">
       </div>
       <!-- nachname -->
       <div class="form-group">
         <label for="lastname">Nachname *</label>
-        <input type="text" name="lastname" class="form-control" id="lastname" value="<?php echo $lastname ?>" placeholder="Geben Sie Ihren Nachnamen an" maxlength="30" required="true">
+        <input type="text" name="lastname" class="form-control" id="lastname" value="<?php echo $lastname ?>" maxlength="30" required="true">
       </div>
       <!-- email -->
       <div class="form-group">
         <label for="email">Email *</label>
-        <input type="email" name="email" class="form-control" id="email" value="<?php echo $email ?>" placeholder="Geben Sie Ihre Email-Adresse an." maxlength="100" required="true">
+        <input type="email" name="email" class="form-control" id="email" value="<?php echo $email ?>" maxlength="100" required="true">
       </div>
       <!-- benutzername -->
       <div class="form-group">
         <label for="username">Benutzername *</label>
-        <input type="text" name="username" class="form-control" id="username" value="<?php echo $username ?>" placeholder="Gross- und Keinbuchstaben, min 6 Zeichen." pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required="true">
+        <input type="text" name="username" class="form-control" id="username" value="<?php echo $username ?>" pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required="true">
       </div>
       <!-- password -->
       <div class="form-group">
-        <label for="password">Password *</label>
+        <label for="password">Neues passwort *</label>
         <input type="password" name="password" class="form-control" id="password" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required="true">
       </div>
       <!-- Send / Reset -->
       <button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
       <button type="reset" name="button" value="reset" class="btn btn-warning">Löschen</button>
+      <!-- Hidden ID -->
+      <input type="hidden" name="id" value="<?php echo $id ?>">
     </form>
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
