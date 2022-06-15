@@ -115,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<ul class="navbar-nav mr-auto">
 			<?php
 				if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-					echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>'; 
+					echo '<li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>'; 
 				} else {
 					header('Location: /151_projektarbeit/admin.php');
 				}
