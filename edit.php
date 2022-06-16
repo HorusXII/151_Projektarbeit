@@ -9,83 +9,107 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin'] or !isset($_GET["id"
 }
 
 // Initialisierung
-$error = $message =  '';
-$firstname = $lastname = $email = $username = $password =  '';
 
+if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+  $error = $message =  '';
+  $id = intval($_POST["id"]);
+  $userid = intval($_SESSION["userid"]);
+  
+  // Vorname ausgefüllt?
+  if (isset($_POST['firstname'])) {
+    //trim and sanitize
+    $firstname = htmlspecialchars(trim($_POST['firstname']));
 
-if (empty($error)) {
-    $query = "UPDATE user SET firstname = ?, lastname = ?,username = ?, password = ?, WHERE id = ? and creator = ?";
-    $stmt = $mysqli->prepare($query);
-    
-    $stmt->bind_param("ssssii", $firstname, $lastname, $username, $password, $_GET["id"], $_SESSION["userid"]);
-    
-    if (!$stmt->execute()) {
-        $error .= 'execute() failed ' . $mysqli->error . '<br />';
-    } else {
-        $message .= 'Datensatz erfolgreich geändert.';
+    //mindestens 1 Zeichen und maximal 30 Zeichen lang
+    if (empty($firstname) || strlen($firstname) > 30) {
+      $error .= "Geben Sie bitte einen korrekten Vornamen ein.<br />";
     }
+  } else {
+    $error .= "Geben Sie bitte einen Vornamen ein.<br />";
+  }
 
-//Check if username already exists.
-$ckeckquery = "SELECT * FROM `users` WHERE username=?";
-$stmt = $mysqli->prepare($ckeckquery);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
+  // Nachname ausgefüllt?
+  if (isset($_POST['lastname'])) {
+    //trim and sanitize
+    $lastname = htmlspecialchars(trim($_POST['lastname']));
 
-if($row != NULL){
+    //mindestens 1 Zeichen und maximal 30 Zeichen lang
+    if (empty($lastname) || strlen($lastname) > 30) {
+      $error .= "Geben Sie bitte einen korrekten Nachname ein.<br />";
+    }
+  } else {
+    $error .= "Geben Sie bitte einen Nachname ein.<br />";
+  }
+
+  // Email ausgefüllt?
+  if (isset($_POST['email'])) {
+    //trim an sanitize
+    $email = htmlspecialchars(trim($_POST['email']));
+
+    //mindestens 1 Zeichen und maximal 100 Zeichen lang, gültige Emailadresse
+    if (empty($email) || strlen($email) > 100 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+      $error .= "Geben Sie bitte eine korrekten Emailadresse ein.<br />";
+    }
+  } else {
+    $error .= "Geben Sie bitte eine Emailadresse ein.<br />";
+  }
+
+  // Username ausgefüllt?
+  if (isset($_POST['username'])) {
+    //trim and sanitize
+    $username = htmlspecialchars(trim($_POST['username']));
+
+    //mindestens 1 Zeichen , entsprich RegEX
+    if (empty($username) || !preg_match("/(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,30}/", $username)) {
+      $error .= "Geben Sie bitte einen korrekten Usernamen ein.".$username."<br />";
+    }
+  } else {
+    $error .= "Geben Sie bitte einen Username ein.<br />";
+  }
+  //Check if username already exists.
+  $ckeckquery = "SELECT * FROM `users` WHERE username=?";
+  $stmt = $mysqli->prepare($ckeckquery);
+  $stmt->bind_param("s", $username);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $row = $result->fetch_assoc();
+  if($row != NULL and $row['id'] == $_POST['id']){
+
+  } elseif($row != NULL){
     $error .= "Benutzername bereits vorhanden, bitte wählen sie einen anderen.";
-}
+  }
 
 
-  // wenn kein Fehler vorhanden ist, schreiben der Daten in die Datenbank
   if (empty($error)) {
-    // Password haschen
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-    
-    // Query erstellen
-    $query = "Insert into users (firstname, lastname, username, password, email, admin, creator) values (?,?,?,?,?,?,?)";
-    
-    // Query vorbereiten
-    $stmt = $mysqli->prepare($query);
-    if ($stmt === false) {
-      $error .= 'prepare() failed ' . $mysqli->error . '<br />';
-    }
+      $query = "UPDATE users SET firstname = ?, lastname = ?,username = ? WHERE id = ? and creator = ?";
+      $stmt = $mysqli->prepare($query);
 
-    if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-      $admin=1;
-      $creator=NULL;
-    } else {
-      $admin=0;
-      $creator = $_SESSION['userid'];
-    }
+      if ($stmt === false) {
+          $error .= 'prepare() failed ' . $mysqli->error . '<br />';
+      }  
 
-    // Parameter an Query binden
-    if (!$stmt->bind_param('sssssis', $firstname, $lastname, $username, $password_hash, $email, $admin, $creator)) {
-      $error .= 'bind_param() failed ' . $mysqli->error . '<br />';
-    }
-
-    // Query ausführen
-    if (!$stmt->execute()) {
-      $error .= 'execute() failed ' . $mysqli->error . '<br />';
-    }
-
-    // kein Fehler!
-    
-    if (empty($error)) {
-      $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
-      // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
-      $username = $password = $firstname = $lastname = $email =  '';
-      // Verbindung schliessen
-      $mysqli->close();
-      // Weiterleiten auf login.php
-      header('Location: /151_projektarbeit/login.php');
-      // beenden des Scriptes
-      exit();
+      $stmt->bind_param("sssii", $firstname, $lastname, $username, $id, $userid);
+      
+      if (!$stmt->execute()) {
+          $error .= 'execute() failed ' . $mysqli->error . '<br />';
+      } else {
+          $message .= 'Datensatz erfolgreich geändert.';
+      }
+      // kein Fehler!
+      
+      if (empty($error)) {
+        $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
+        // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
+        $username = $firstname = $lastname = $email =  '';
+        // Verbindung schliessen
+        $mysqli->close();
+        // Weiterleiten auf login.php
+        header('Location: /151_projektarbeit/login.php');
+        // beenden des Scriptes
+        exit();
+      }
     }
   }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -129,13 +153,13 @@ if($row != NULL){
   <div class="container">
     <?php
     $id = htmlspecialchars($_GET["id"]);
-    $query = "SELECT * FROM `users` WHERE id=".$id;
+    $query = "SELECT * FROM `users` WHERE id=".$id." AND creator=".$_SESSION['userid'];
     $result = $mysqli->query($query);
     $User = $result->fetch_assoc();
-    $firstname = $User['firstname'];
-    $lastname = $User['lastname'];
-    $email = $User['email'];
-    $username = $User['username'];
+    if(!isset($User['username'])){
+      header('Location: /151_projektarbeit/overview.php');
+    }
+
 
     ?>
     <?php
@@ -147,35 +171,30 @@ if($row != NULL){
     }
     
     ?>
-    <form action="" method="post">
+    <form method="post">
       <!-- vorname -->
       <div class="form-group">
         <label for="firstname">Vorname *</label>
-        <input type="text" name="firstname" class="form-control" id="firstname" value="<?php echo $firstname ?>" maxlength="30" required="true">
+        <input type="text" name="firstname" class="form-control" id="firstname" value="<?php echo htmlspecialchars($User['firstname']) ?>" maxlength="30" required>
       </div>
       <!-- nachname -->
       <div class="form-group">
         <label for="lastname">Nachname *</label>
-        <input type="text" name="lastname" class="form-control" id="lastname" value="<?php echo $lastname ?>" maxlength="30" required="true">
+        <input type="text" name="lastname" class="form-control" id="lastname" value="<?php echo htmlspecialchars($User['lastname']) ?>" maxlength="30" required>
       </div>
       <!-- email -->
       <div class="form-group">
         <label for="email">Email *</label>
-        <input type="email" name="email" class="form-control" id="email" value="<?php echo $email ?>" maxlength="100" required="true">
+        <input type="email" name="email" class="form-control" id="email" value="<?php echo htmlspecialchars($User['email']) ?>" maxlength="100" required>
       </div>
       <!-- benutzername -->
       <div class="form-group">
         <label for="username">Benutzername *</label>
-        <input type="text" name="username" class="form-control" id="username" value="<?php echo $username ?>" pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required="true">
-      </div>
-      <!-- password -->
-      <div class="form-group">
-        <label for="password">Neues passwort *</label>
-        <input type="password" name="password" class="form-control" id="password" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required="true">
+        <input type="text" name="username" class="form-control" id="username" value="<?php echo htmlspecialchars($User['username']) ?>" pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required>
       </div>
       <!-- Send / Reset -->
       <button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
-      <button type="reset" name="button" value="reset" class="btn btn-warning">Löschen</button>
+      <button onclick="history.go(-1)" name="button" value="reset" class="btn btn-warning">Zurück</button>
       <!-- Hidden ID -->
       <input type="hidden" name="id" value="<?php echo $id ?>">
     </form>

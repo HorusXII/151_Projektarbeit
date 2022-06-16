@@ -1,13 +1,8 @@
 <?php
 
-// TODO - mit eigener Datenbak verbinden
-$host = 'localhost';
-$username = 'DbUser';
-$password = 'password1234';
-$database = '151_projektarbeit';
 
 // mit Datenbank verbinden
-$mysqli = new mysqli($host, $username, $password, $database);
+$mysqli = new mysqli('localhost', 'DbUser', 'password1234', '151_projektarbeit');
 
 // Fehlermeldung, falls Verbindung fehl schlägt.
 if ($mysqli->connect_error) {

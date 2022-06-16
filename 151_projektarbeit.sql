@@ -13,9 +13,9 @@ CREATE TABLE `users` (
   `creator` VARCHAR(30) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `users` (`id`, `image`, `firstname`, `lastname`, `username`, `password`, `email`, `Admin`) VALUES
-(1, '', 'Lukas', 'Breiter', 'BreiterL', '$2y$10$EiEKtLTsLyubtAfp1ro0H.L6uNzCXokA9P7dQjytKvgA.U9Z25z/m', 'lukasbreiter@bluewin.ch', 1,
-(2, '', 'Noah', 'Kaderli', 'KaderliN', '$2y$10$Ypr6e2t8/a2BNK..Qp7ceOvaHVdJNDoYdaooLFWOPR8uFs0pH.Lxm', 'Noah.Kaderli@bbzbl-it.com', 0, 1);
+INSERT INTO `users` (`id`, `image`, `firstname`, `lastname`, `username`, `password`, `email`, `Admin`)
+VALUES
+(1, '', 'Lukas', 'Breiter', 'BreiterL', '$2y$10$EiEKtLTsLyubtAfp1ro0H.L6uNzCXokA9P7dQjytKvgA.U9Z25z/m', 'lukasbreiter@bluewin.ch', 1);
 
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
