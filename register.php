@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   // Vorname ausgefüllt?
   if (isset($_POST['firstname'])) {
-    //trim and sanitize
-    $firstname = htmlspecialchars(trim($_POST['firstname']));
+    //trim 
+    $firstname = trim($_POST['firstname']);
 
     //mindestens 1 Zeichen und maximal 30 Zeichen lang
     if (empty($firstname) || strlen($firstname) > 30) {
@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   // Nachname ausgefüllt?
   if (isset($_POST['lastname'])) {
-    //trim and sanitize
-    $lastname = htmlspecialchars(trim($_POST['lastname']));
+    //trim
+    $lastname = trim($_POST['lastname']);
 
     //mindestens 1 Zeichen und maximal 30 Zeichen lang
     if (empty($lastname) || strlen($lastname) > 30) {
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
   // Email ausgefüllt?
   if (isset($_POST['email'])) {
     //trim an sanitize
-    $email = htmlspecialchars(trim($_POST['email']));
+    $email = trim($_POST['email']);
 
     //mindestens 1 Zeichen und maximal 100 Zeichen lang, gültige Emailadresse
     if (empty($email) || strlen($email) > 100 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   // Username ausgefüllt?
   if (isset($_POST['username'])) {
-    //trim and sanitize
-    $username = htmlspecialchars(trim($_POST['username']));
+    //trim
+    $username = trim($_POST['username']);
 
     //mindestens 1 Zeichen , entsprich RegEX
     if (empty($username) || !preg_match("/(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,30}/", $username)) {
@@ -104,6 +104,7 @@ if($row != NULL){
       $error .= 'prepare() failed ' . $mysqli->error . '<br />';
     }
 
+    // überprüfen wie der Benutzer erstellt wurde - verteilen der Rechte
     if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
       $admin=1;
       $creator=NULL;
@@ -163,21 +164,24 @@ if($row != NULL){
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        
-        <?php
-        if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-          echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
-        } else {
-          echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>'; 
-          echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
-        }
-        ?>
+      <ul class="navbar-nav mr-auto">  
+      <?php
+            if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
+              echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
+            } elseif(!$_SESSION['admin'] == 1){
+              header('Location: admin.php');
+            } else {
+              echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
+              echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
+              echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>';
+              echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
+              echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+            }
+          ?>
       </ul>
     </div>
   </nav>
+
   <div class="container">
     <?php
           if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
@@ -191,6 +195,7 @@ if($row != NULL){
           }
         ?>
     <?php
+
     // Ausgabe der Fehlermeldungen
     if (!empty($error)) {
       echo "<div class=\"alert alert-danger\" role=\"alert\">" . $error . "</div>";
@@ -198,6 +203,7 @@ if($row != NULL){
       echo "<div class=\"alert alert-success\" role=\"alert\">" . $message . "</div>";
     }
     ?>
+
     <form method="post">
       <!-- vorname -->
       <div class="form-group">

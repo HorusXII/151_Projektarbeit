@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// username
 	if (isset($_POST['username'])) {
 		//trim and sanitize
-		$username = htmlspecialchars(trim($_POST['username']));
+		$username = trim($_POST['username']);
 
 		// Prüfung username
 		if (empty($username) || !preg_match("/(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,30}/", $username)) {
@@ -41,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// kein Fehler
 	if (empty($error)) {
 		// Query erstellen
-		$query = "SELECT id, username, password from users where username = ?";
-		
+		$query = "SELECT id, username, password, admin from users where username = ?";
+
 		// Query vorbereiten
 		$stmt = $mysqli->prepare($query);
 		if ($stmt === false) {
@@ -69,15 +69,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$_SESSION['loggedin'] = true;
 				$_SESSION['username'] = $row['username'];
 				$_SESSION['userid'] = $row['id'];
+				$_SESSION['admin'] = $row['admin'];
 
 				// TODO - Session ID regenerieren
 				session_regenerate_id(true);
 
 				// TODO - weiterleiten auf admin.php
-				header("location: /151_projektarbeit/admin.php" );
+				header("location: /151_projektarbeit/admin.php");
 				// TODO - Script beenden
 				exit();
-
 			} else {
 				$error .= "Benutzername oder Passwort sind falsch";
 			}
@@ -113,13 +113,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-			<?php
-				if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-					echo '<li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>'; 
+				<?php
+				if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
+					echo '<li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>';
 				} else {
 					header('Location: /151_projektarbeit/admin.php');
 				}
-			?>
+				?>
 			</ul>
 		</div>
 	</nav>
@@ -137,17 +137,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 
 
-		
+
 		?>
 		<form action="" method="POST">
 			<div class="form-group">
 				<label for="username">Benutzername *</label>
-				<input type="text" name="username" class="form-control" id="username" value="" placeholder="Gross- und Keinbuchstaben, min 6 Zeichen." pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required="true">
+				<input type="text" name="username" class="form-control" id="username" value="" placeholder="Gross- und Keinbuchstaben, min 6 Zeichen." pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required>
 			</div>
 			<!-- password -->
 			<div class="form-group">
 				<label for="password">Password *</label>
-				<input type="password" name="password" class="form-control" id="password" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required="true">
+				<input type="password" name="password" class="form-control" id="password" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
 			</div>
 			<button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
 			<button type="reset" name="button" value="reset" class="btn btn-warning">Löschen</button>

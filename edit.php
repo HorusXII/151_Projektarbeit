@@ -4,8 +4,8 @@
 session_start();
 // Datenbankverbindung
 include('include/dbconnector.inc.php');
-if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin'] or !isset($_GET["id"]) or !is_numeric($_GET["id"]))  {
-    header('Location: /151_projektarbeit/overview.php');
+if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin'] or !isset($_GET["id"]) or !is_numeric($_GET["id"])) {
+  header('Location: /151_projektarbeit/overview.php');
 }
 
 // Initialisierung
@@ -14,11 +14,11 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
   $error = $message =  '';
   $id = intval($_POST["id"]);
   $userid = intval($_SESSION["userid"]);
-  
+
   // Vorname ausgefüllt?
   if (isset($_POST['firstname'])) {
     //trim and sanitize
-    $firstname = htmlspecialchars(trim($_POST['firstname']));
+    $firstname = trim($_POST['firstname']);
 
     //mindestens 1 Zeichen und maximal 30 Zeichen lang
     if (empty($firstname) || strlen($firstname) > 30) {
@@ -31,7 +31,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
   // Nachname ausgefüllt?
   if (isset($_POST['lastname'])) {
     //trim and sanitize
-    $lastname = htmlspecialchars(trim($_POST['lastname']));
+    $lastname = trim($_POST['lastname']);
 
     //mindestens 1 Zeichen und maximal 30 Zeichen lang
     if (empty($lastname) || strlen($lastname) > 30) {
@@ -44,7 +44,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
   // Email ausgefüllt?
   if (isset($_POST['email'])) {
     //trim an sanitize
-    $email = htmlspecialchars(trim($_POST['email']));
+    $email = trim($_POST['email']);
 
     //mindestens 1 Zeichen und maximal 100 Zeichen lang, gültige Emailadresse
     if (empty($email) || strlen($email) > 100 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -57,11 +57,11 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
   // Username ausgefüllt?
   if (isset($_POST['username'])) {
     //trim and sanitize
-    $username = htmlspecialchars(trim($_POST['username']));
+    $username = trim($_POST['username']);
 
     //mindestens 1 Zeichen , entsprich RegEX
     if (empty($username) || !preg_match("/(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,30}/", $username)) {
-      $error .= "Geben Sie bitte einen korrekten Usernamen ein.".$username."<br />";
+      $error .= "Geben Sie bitte einen korrekten Usernamen ein." . htmlspecialchars($username) . "<br />";
     }
   } else {
     $error .= "Geben Sie bitte einen Username ein.<br />";
@@ -73,43 +73,43 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
   $stmt->execute();
   $result = $stmt->get_result();
   $row = $result->fetch_assoc();
-  if($row != NULL and $row['id'] == $_POST['id']){
-
-  } elseif($row != NULL){
+  // check if returned username is not the edited user
+  if ($row != NULL and $row['id'] == $_POST['id']) {
+  } elseif ($row != NULL) {
     $error .= "Benutzername bereits vorhanden, bitte wählen sie einen anderen.";
   }
 
 
   if (empty($error)) {
-      $query = "UPDATE users SET firstname = ?, lastname = ?,username = ? WHERE id = ? and creator = ?";
-      $stmt = $mysqli->prepare($query);
+    $query = "UPDATE users SET firstname = ?, lastname = ?,username = ? WHERE id = ? and creator = ?";
+    $stmt = $mysqli->prepare($query);
 
-      if ($stmt === false) {
-          $error .= 'prepare() failed ' . $mysqli->error . '<br />';
-      }  
+    if ($stmt === false) {
+      $error .= 'prepare() failed ' . $mysqli->error . '<br />';
+    }
 
-      $stmt->bind_param("sssii", $firstname, $lastname, $username, $id, $userid);
-      
-      if (!$stmt->execute()) {
-          $error .= 'execute() failed ' . $mysqli->error . '<br />';
-      } else {
-          $message .= 'Datensatz erfolgreich geändert.';
-      }
-      // kein Fehler!
-      
-      if (empty($error)) {
-        $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
-        // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
-        $username = $firstname = $lastname = $email =  '';
-        // Verbindung schliessen
-        $mysqli->close();
-        // Weiterleiten auf login.php
-        header('Location: /151_projektarbeit/login.php');
-        // beenden des Scriptes
-        exit();
-      }
+    $stmt->bind_param("sssii", $firstname, $lastname, $username, $id, $userid);
+
+    if (!$stmt->execute()) {
+      $error .= 'execute() failed ' . $mysqli->error . '<br />';
+    } else {
+      $message .= 'Datensatz erfolgreich geändert.';
+    }
+    // kein Fehler!
+
+    if (empty($error)) {
+      $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
+      // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
+      $username = $firstname = $lastname = $email =  '';
+      // Verbindung schliessen
+      $mysqli->close();
+      // Weiterleiten auf login.php
+      header('Location: /151_projektarbeit/login.php');
+      // beenden des Scriptes
+      exit();
     }
   }
+}
 ?>
 
 <!DOCTYPE html>
@@ -136,14 +136,17 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        
+
         <?php
-        if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
+        if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
           echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
+        } if (!$_SESSION['admin'] == 1) {
+          header('Location: /151_projektarbeit/admin.php');
         } else {
           echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
           echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>'; 
+          echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
           echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
         }
         ?>
@@ -153,10 +156,10 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
   <div class="container">
     <?php
     $id = htmlspecialchars($_GET["id"]);
-    $query = "SELECT * FROM `users` WHERE id=".$id." AND creator=".$_SESSION['userid'];
+    $query = "SELECT * FROM `users` WHERE id=" . $id . " AND creator=" . $_SESSION['userid'];
     $result = $mysqli->query($query);
     $User = $result->fetch_assoc();
-    if(!isset($User['username'])){
+    if (!isset($User['username'])) {
       header('Location: /151_projektarbeit/overview.php');
     }
 
@@ -169,7 +172,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
     } else if (!empty($message)) {
       echo "<div class=\"alert alert-success\" role=\"alert\">" . $message . "</div>";
     }
-    
+
     ?>
     <form method="post">
       <!-- vorname -->

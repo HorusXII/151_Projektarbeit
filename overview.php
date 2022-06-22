@@ -5,7 +5,7 @@ include('include/dbconnector.inc.php');
 $error = $message = '';
 
 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
-    header('Location: /151_projektarbeit/login.php');
+    header('Location: login.php');
     die();
 }
 ?>
@@ -33,14 +33,16 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-
             <?php
                 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
                     echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
+                } elseif(!$_SESSION['admin'] == 1){
+                    header('Location: admin.php');
                 } else {
                     echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
                     echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
                     echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>'; 
+                    echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
                     echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
                 }
             ?>
@@ -48,7 +50,7 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
         </div>
     </nav>
     <div class="container">
-        <h1>Benutzer:</h1>
+        <h1>Benutzerübersicht:</h1>
         <?php
         // Ausgabe der Fehlermeldungen
         if (!empty($error)) {

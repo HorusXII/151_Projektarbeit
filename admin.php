@@ -34,16 +34,20 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
 
-            <?php
-                if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
+                <?php
+                if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
                     echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
+                } if (!$_SESSION['admin'] == 1) {
+                    echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
+                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
                 } else {
                     echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
                     echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-                    echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>'; 
+                    echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>';
+                    echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
                     echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
                 }
-            ?>
+                ?>
             </ul>
         </div>
     </nav>
@@ -53,11 +57,10 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
         // Ausgabe der Fehlermeldungen
         if (!empty($error)) {
             echo "<div class=\"alert alert-danger\" role=\"alert\">" . $error . "</div>";
-        }else{
+        } else {
             $query = "SELECT * FROM `users`";
             $result = $mysqli->query($query);
-            
-         }
+        }
         ?>
         <table class="table">
             <tr>
@@ -66,13 +69,12 @@ if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
                 <th>E-Mail</th>
             </tr>
             <?php
-            while($row = $result->fetch_assoc()){
+            while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . $row['firstname'] ."</td>". "<td>" . $row['lastname'] . "</td>". "<td>" . $row['email'] . "</td>";
+                echo "<td>" . htmlspecialchars($row['firstname']) . "</td>" . "<td>" . htmlspecialchars($row['lastname']) . "</td>" . "<td>" . htmlspecialchars($row['email']) . "</td>";
                 echo "</tr>";
-            
             }
-            
+
             $result->free();
             ?>
         </table>
