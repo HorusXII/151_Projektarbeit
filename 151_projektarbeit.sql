@@ -1,9 +1,10 @@
+-- Create Database
 CREATE DATABASE 151_projektarbeit;
 USE 151_projektarbeit;
 
+-- Create & configure table
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `image` blob NOT NULL,
   `firstname` varchar(30) NOT NULL,
   `lastname` varchar(30) NOT NULL,
   `username` varchar(30) NOT NULL,
@@ -23,5 +24,6 @@ ALTER TABLE `users`
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
 
+--create user for the project
 CREATE USER 'DbUser'@'localhost' IDENTIFIED BY 'password1234';
 GRANT SELECT, INSERT, UPDATE, DELETE ON `151_projektarbeit`.* TO 'DbUser'@'localhost';
