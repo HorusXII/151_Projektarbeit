@@ -5,7 +5,7 @@ include('include/dbconnector.inc.php');
 $error = $message = '';
 
 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
-    header('Location: /151_projektarbeit/login.php');
+    header('Location:  login.php');
     die();
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-// TODO - Sessionhandling starten
+// Sessionhandling starten
 session_start();
 // Datenbankverbindung
 include('include/dbconnector.inc.php');
@@ -168,6 +168,7 @@ if($row != NULL){
       <?php
             if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
               echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
+              echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
             } elseif(!$_SESSION['admin'] == 1){
               header('Location: admin.php');
             } else {
@@ -232,7 +233,7 @@ if($row != NULL){
       </div>
       <!-- Send / Reset -->
       <button type="submit" name="button" value="submit" class="btn btn-primary">Senden</button>
-      <button type="reset" name="button" value="reset" class="btn btn-secondary">Löschen</button>
+      <input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
     </form>
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

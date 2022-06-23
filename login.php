@@ -1,6 +1,6 @@
 <?php
 
-// TODO - Sessionhandling starten
+// Sessionhandling starten
 session_start();
 
 // Datenbankverbindung
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	// username
 	if (isset($_POST['username'])) {
-		//trim and sanitize
+		//trim
 		$username = trim($_POST['username']);
 
 		// Prüfung username
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 	// password
 	if (isset($_POST['password'])) {
-		//trim and sanitize
+		//trim
 		$password = trim($_POST['password']);
 		// passwort gültig?
 		if (empty($password) || !preg_match("/(?=^.{8,255}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/", $password)) {
@@ -65,18 +65,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			// Passwort ok?
 			if (password_verify($password, $row['password'])) {
 
-				// TODO - Session personifizieren
+				// Session personifizieren
 				$_SESSION['loggedin'] = true;
 				$_SESSION['username'] = $row['username'];
 				$_SESSION['userid'] = $row['id'];
 				$_SESSION['admin'] = $row['admin'];
 
-				// TODO - Session ID regenerieren
+				// Session ID regenerieren
 				session_regenerate_id(true);
 
-				// TODO - weiterleiten auf admin.php
+				// weiterleiten auf admin.php
 				header("location: /151_projektarbeit/admin.php");
-				// TODO - Script beenden
+				// Script beenden
 				exit();
 			} else {
 				$error .= "Benutzername oder Passwort sind falsch";
@@ -102,7 +102,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<!-- Font Awesome -->
 	<script src="https://kit.fontawesome.com/aa92474866.js" crossorigin="anonymous"></script>
 </head>
-</head>
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -115,9 +114,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<ul class="navbar-nav mr-auto">
 				<?php
 				if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
-					echo '<li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>';
+					echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
+					echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';	
 				} else {
-					header('Location: /151_projektarbeit/admin.php');
+					header('Location: admin.php');
 				}
 				?>
 			</ul>
@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 		?>
-		<form action="" method="POST">
+		<form method="POST">
 			<div class="form-group">
 				<label for="username">Benutzername *</label>
 				<input type="text" name="username" class="form-control" id="username" value="" placeholder="Gross- und Keinbuchstaben, min 6 Zeichen." pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required>
@@ -150,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<input type="password" name="password" class="form-control" id="password" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
 			</div>
 			<button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
-			<button type="reset" name="button" value="reset" class="btn btn-warning">Löschen</button>
+			<input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
 		</form>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

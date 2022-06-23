@@ -1,11 +1,11 @@
 <?php
 
-// TODO - Sessionhandling starten
+// Sessionhandling starten
 session_start();
 // Datenbankverbindung
 include('include/dbconnector.inc.php');
 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin'] or !isset($_GET["id"]) or !is_numeric($_GET["id"])) {
-  header('Location: /151_projektarbeit/overview.php');
+  header('Location: overview.php');
 }
 
 // Initialisierung
@@ -141,7 +141,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
         if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
           echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
         } if (!$_SESSION['admin'] == 1) {
-          header('Location: /151_projektarbeit/admin.php');
+          header('Location: admin.php');
         } else {
           echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
           echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
@@ -197,7 +197,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
       </div>
       <!-- Send / Reset -->
       <button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
-      <button onclick="history.go(-1)" name="button" value="reset" class="btn btn-warning">Zurück</button>
+      <input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
       <!-- Hidden ID -->
       <input type="hidden" name="id" value="<?php echo $id ?>">
     </form>

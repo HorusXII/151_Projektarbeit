@@ -1,6 +1,6 @@
 <?php
 
-// TODO - Sessionhandling starten
+// Sessionhandling starten
 session_start();
 // Datenbankverbindung
 include('include/dbconnector.inc.php');
@@ -10,7 +10,7 @@ $message = '';
 
 
 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
-    header('Location: /151_projektarbeit/overview.php');
+    header('Location: overview.php');
 }
 
 // Initialisierung
@@ -164,6 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </nav>
     <div class="container">
+        <h1>Ändern Sie ihr Password:</h1>
         <?php
         $id = $_SESSION["userid"];
         $query = "SELECT password FROM `users` WHERE id=" . $_SESSION['userid'];
@@ -182,21 +183,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="post">
             <!-- password -->
             <div class="form-group">
-                <label for="password">Altes Passwort: *</label>
+                <label for="oldpassword">Altes Passwort: *</label>
                 <input type="password" name="oldpassword" class="form-control" id="oldpassword" placeholder="Altes Passwort" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
             </div>
             <!-- password -->
             <div class="form-group">
-                <label for="password">Neues Passwort: *</label>
+                <label for="newpassword">Neues Passwort: *</label>
                 <input type="password" name="newpassword" class="form-control" id="newpassword" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, max. 30 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
             </div>
             <!-- password -->
             <div class="form-group">
-                <label for="password">Wiederholen sie das neue Passwort: *</label>
+                <label for="repeatnewpasswort">Wiederholen sie das neue Passwort: *</label>
                 <input type="password" name="repeatnewpasswort" class="form-control" id="repeatnewpasswort" placeholder="Bitte wiederholen sie das vorher angegebene Passwort" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
             </div>
             <input type="hidden" name="id" value="<?php echo $id ?>">
-            <button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
+            <button type="submit" name="submit" value="submit" class="btn btn-info">Senden</button>
+            <input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

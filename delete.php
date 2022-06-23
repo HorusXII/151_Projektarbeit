@@ -1,12 +1,12 @@
 
 <?php
-// TODO - Sessionhandling starten
+// Sessionhandling starten
 session_start();
 // Datenbankverbindung
 include('include/dbconnector.inc.php');
 
 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin'])  {
-    header('Location: /151_projektarbeit/overview.php');
+    header('Location: overview.php');
 }
 
 // Initialisierung
@@ -30,7 +30,7 @@ if (isset($_GET['id']) and is_numeric($_GET['id'])) {
         // Anzahl betroffener Zeilen, grösser als 0?
         if ($mysqli->affected_rows) {
             $message .= 'Datensatz erfolgreich gelöscht.<br>';
-            header('Location: /151_projektarbeit/overview.php');
+            header('Location: overview.php');
         } else {
             $error .= "Kein Datensatz in der Datenbank gefunden.<br>";
         }
