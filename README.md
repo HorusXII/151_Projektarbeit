@@ -1,12 +1,10 @@
 # 151_Projektarbeit
+151_Project work is a Project for Module 151, where the goal was to integrate a database into a web application.
 
-151_Projektarbeit ist ein Projekt für das Modul 151, bei welchem es Ziel war eine Datenbank & mit dem 
-
-## requirements
+## Requirements
 XAMPP/WAMP/MAMP/LAMP or any other kind of local Server
 
 ## Installation
-
 pull into htdocs/151_Projektarbeit.
 
 use the first part of the code in 151_projektarbeit.sql to first create the Database.
