@@ -7,10 +7,10 @@ XAMPP/WAMP/MAMP/LAMP or any other kind of local Server
 
 ## Installation
 
-#pull into htdocs/151_Projektarbeit
-#use the code in 151_projektarbeit.sql to first create the Database
-#create table
-#create user
+pull into htdocs/151_Projektarbeit
+use the code in 151_projektarbeit.sql to first create the Database
+create table
+create user
 
 #Got to 127.0.0.1/151_projektarbeit/login.php
 
