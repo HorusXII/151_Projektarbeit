@@ -7,14 +7,15 @@ XAMPP/WAMP/MAMP/LAMP or any other kind of local Server
 
 ## Installation
 
-pull into htdocs/151_Projektarbeit
-use the code in 151_projektarbeit.sql to first create the Database
-create table
-create user
+pull into htdocs/151_Projektarbeit.
 
-#Got to 127.0.0.1/151_projektarbeit/login.php
+use the first part of the code in 151_projektarbeit.sql to first create the Database.
 
-#Enjoy
+Execute the rest of the SQL code.
+
+Got to 127.0.0.1/151_projektarbeit/login.php
+
+Enjoy
 
 ## Authors
 This project was planned & created by Lukas Raphael Breiter & Marco Luigi Rampinelli
