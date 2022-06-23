@@ -24,6 +24,6 @@ ALTER TABLE `users`
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
 
---create user for the project
+--create Projectuser
 CREATE USER 'DbUser'@'localhost' IDENTIFIED BY 'password1234';
 GRANT SELECT, INSERT, UPDATE, DELETE ON `151_projektarbeit`.* TO 'DbUser'@'localhost';
