@@ -161,9 +161,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo '<span class="caret"></span>';
                     echo '</button>';
                     echo '<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">';
-                    echo '<li class="nav-item"><a class="dropdown-item" href="overview.php">Meine Benutzer</a></li>';
-                    echo '<li class="nav-item"><a class="dropdown-item" href="password.php">Passwort ändern</a></li>';
-                    echo '<li class="nav-item"><a class="dropdown-item" href="./logout.php">Logout</a></li>';
+                    if (!$_SESSION['admin'] == 1) {
+                        echo '<li class="nav-item"><a class="dropdown-item" href="password.php">Passwort ändern</a></li>';
+                    } else {
+                        echo '<li class="nav-item"><a class="dropdown-item" href="overview.php">Meine Benutzer</a></li>';
+                        echo '<li class="nav-item"><a class="dropdown-item" href="password.php">Passwort ändern</a></li>';
+                    }
+                    echo '<li class="nav-item"><a class="dropdown-item" href="logout.php">Logout</a></li>';
                 }
                 ?>
             </ul>

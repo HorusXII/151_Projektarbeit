@@ -32,7 +32,7 @@ if (isset($_GET['id']) and is_numeric($_GET['id'])) {
                 $message .= 'Datensatz erfolgreich gelöscht.<br>';
                 header('Location: overview.php');
             } else {
-                $error .= "Kein Datensatz in der Datenbank gefunden.<br>";
+                $error .= "<h1>Unzureichende Berechtigung</h1>";
             }
         }
     } else {
