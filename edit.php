@@ -95,6 +95,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
       header('Location: overview.php');
     } else {
       $message .= 'Datensatz erfolgreich geändert.';
+      header('Location: overview.php');
     }
     // kein Fehler!
 
