@@ -128,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bearbeiten</title>
+    <title>Passwort ändern</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -145,26 +145,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-
                 <?php
                 if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
                     echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
-                } elseif (!$_SESSION['admin'] == 1) {
-                    echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+                    echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
                 } else {
-                    echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
+                    if ($_SESSION['admin'] == 1) {
+                        echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
+                    }
                     echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-                    echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>';
-                    echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
-                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+                    echo '</ul></div>';
+                    echo '<div class="dropdown ms-auto">';
+                    echo '<button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown" style="padding: 0px">';
+                    echo '<img src="https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png" alt="Profilepicture placeholder" class="img-responsive img-rounded " style="max-height: 40px; max-width: 40px;">';
+                    echo '<span class="caret"></span>';
+                    echo '</button>';
+                    echo '<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">';
+                    echo '<li class="nav-item"><a class="dropdown-item" href="overview.php">Meine Benutzer</a></li>';
+                    echo '<li class="nav-item"><a class="dropdown-item" href="password.php">Passwort ändern</a></li>';
+                    echo '<li class="nav-item"><a class="dropdown-item" href="./logout.php">Logout</a></li>';
                 }
                 ?>
             </ul>
         </div>
     </nav>
+
     <div class="container">
-        <h1>Ändern Sie ihr Password:</h1>
+        <h1>Ändern Sie ihr Passwort:</h1>
         <?php
         $id = $_SESSION["userid"];
         $query = "SELECT password FROM `users` WHERE id=" . $_SESSION['userid'];
@@ -197,7 +204,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="password" name="repeatnewpasswort" class="form-control" id="repeatnewpasswort" placeholder="Bitte wiederholen sie das vorher angegebene Passwort" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
             </div>
             <input type="hidden" name="id" value="<?php echo $id ?>">
-            <button type="submit" name="submit" value="submit" class="btn btn-info">Senden</button>
+            <button type="submit" name="submit" value="submit" class="btn btn-info">Ändern</button>
             <input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
         </form>
     </div>

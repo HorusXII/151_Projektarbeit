@@ -115,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<?php
 				if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
 					echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
-					echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';	
+					echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
 				} else {
 					header('Location: admin.php');
 				}
