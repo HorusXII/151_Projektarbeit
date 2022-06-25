@@ -77,27 +77,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $error .= "Geben Sie bitte ein Password ein.<br />";
   }
 
-//Check if username already exists.
-$ckeckquery = "SELECT * FROM `users` WHERE username=?";
-$stmt = $mysqli->prepare($ckeckquery);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
+  //Check if username already exists.
+  $ckeckquery = "SELECT * FROM `users` WHERE username=?";
+  $stmt = $mysqli->prepare($ckeckquery);
+  $stmt->bind_param("s", $username);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $row = $result->fetch_assoc();
 
-if($row != NULL){
+  if ($row != NULL) {
     $error .= "Benutzername bereits vorhanden, bitte wählen sie einen anderen.";
-}
+  }
 
 
   // wenn kein Fehler vorhanden ist, schreiben der Daten in die Datenbank
   if (empty($error)) {
     // Password haschen
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
-    
+
     // Query erstellen
     $query = "Insert into users (firstname, lastname, username, password, email, admin, creator) values (?,?,?,?,?,?,?)";
-    
+
     // Query vorbereiten
     $stmt = $mysqli->prepare($query);
     if ($stmt === false) {
@@ -105,11 +105,11 @@ if($row != NULL){
     }
 
     // überprüfen wie der Benutzer erstellt wurde - verteilen der Rechte
-    if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-      $admin=1;
-      $creator=NULL;
+    if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
+      $admin = 1;
+      $creator = NULL;
     } else {
-      $admin=0;
+      $admin = 0;
       $creator = $_SESSION['userid'];
     }
 
@@ -124,7 +124,7 @@ if($row != NULL){
     }
 
     // kein Fehler!
-    
+
     if (empty($error)) {
       $message .= "Die Daten wurden erfolgreich in die Datenbank geschrieben<br/ >";
       // Felder leeren und Weiterleitung auf anderes Script: z.B. Login!
@@ -164,37 +164,44 @@ if($row != NULL){
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">  
-      <?php
-            if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-              echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
-              echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
-            } elseif(!$_SESSION['admin'] == 1){
-              header('Location: admin.php');
-            } else {
-              echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
-              echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-              echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>';
-              echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
-              echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
-            }
-          ?>
+      <ul class="navbar-nav mr-auto">
+        <?php
+        if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
+          echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
+        } elseif (!$_SESSION['admin'] == 1) {
+          header('Location: admin.php');
+        } else {
+          echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
+          echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
+          echo '</ul></div>';
+          echo '<div class="dropdown ms-auto">';
+          echo '<button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown" style="padding: 0px">';
+          echo '<img src="https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png" alt="Profilepicture placeholder" class="img-responsive img-rounded " style="max-height: 40px; max-width: 40px;">';
+          echo '<span class="caret"></span>';
+          echo '</button>';
+          echo '<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">';
+          echo '<li class="nav-item"><a class="dropdown-item" href="overview.php">Meine Benutzer</a></li>';
+          echo '<li class="nav-item"><a class="dropdown-item" href="password.php">Passwort ändern</a></li>';
+          echo '<li class="nav-item"><a class="dropdown-item" href="./logout.php">Logout</a></li>';
+        }
+        ?>
       </ul>
     </div>
   </nav>
 
   <div class="container">
     <?php
-          if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']){
-            echo '<h1>Registrierung</h1>';
-            echo  '<p> Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.</p>';
-            $admin=0;
-          } else {
-            echo '<h1> Neuer Benutzer </h1>';
-            echo  '<p> Erstellen sie einen neuen Benutzer ihren wünschen entsprechend.</p>';
-            $admin=1;
-          }
-        ?>
+    if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
+      echo '<h1>Registrierung</h1>';
+      echo  '<p> Bitte registrieren Sie sich, damit Sie diesen Dienst benutzen können.</p>';
+      $admin = 0;
+    } else {
+      echo '<h1> Neuer Benutzer </h1>';
+      echo  '<p> Erstellen sie einen neuen Benutzer ihren wünschen entsprechend.</p>';
+      $admin = 1;
+    }
+    ?>
     <?php
 
     // Ausgabe der Fehlermeldungen
@@ -232,7 +239,7 @@ if($row != NULL){
         <input type="password" name="password" class="form-control" id="password" placeholder="Gross- und Kleinbuchstaben, Zahlen, Sonderzeichen, min. 8 Zeichen, keine Umlaute" pattern="(?=^.{8,}$)((?=.*\d+)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" title="mindestens einen Gross-, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen, mindestens 8 Zeichen lang,keine Umlaute." maxlength="255" required>
       </div>
       <!-- Send / Reset -->
-      <button type="submit" name="button" value="submit" class="btn btn-primary">Senden</button>
+      <button type="submit" name="button" value="submit" class="btn btn-primary">Erstellen</button>
       <input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
     </form>
   </div>

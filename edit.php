@@ -92,6 +92,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
 
     if (!$stmt->execute()) {
       $error .= 'execute() failed ' . $mysqli->error . '<br />';
+      header('Location: overview.php');
     } else {
       $message .= 'Datensatz erfolgreich geändert.';
     }
@@ -103,8 +104,6 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
       $username = $firstname = $lastname = $email =  '';
       // Verbindung schliessen
       $mysqli->close();
-      // Weiterleiten auf login.php
-      header('Location: /151_projektarbeit/login.php');
       // beenden des Scriptes
       exit();
     }
@@ -136,23 +135,31 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-
         <?php
         if (!isset($_SESSION['loggedin']) or !$_SESSION['loggedin']) {
+          echo '<li class="nav-item"><a class="nav-link" href="register.php">Registrierung</a></li>';
           echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>';
-        } if (!$_SESSION['admin'] == 1) {
+        } elseif (!$_SESSION['admin'] == 1) {
           header('Location: admin.php');
         } else {
           echo '<li class="nav-item"><a class="nav-link" href="register.php">Neuer Benutzer</a></li>';
           echo '<li class="nav-item"><a class="nav-link" href="admin.php">Benutzerliste</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="overview.php">Meine Benutzer</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="password.php">Passwort ändern</a></li>';
-          echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Logout</a></li>';
+          echo '</ul></div>';
+          echo '<div class="dropdown ms-auto">';
+          echo '<button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown" style="padding: 0px">';
+          echo '<img src="https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png" alt="Profilepicture placeholder" class="img-responsive img-rounded " style="max-height: 40px; max-width: 40px;">';
+          echo '<span class="caret"></span>';
+          echo '</button>';
+          echo '<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">';
+          echo '<li class="nav-item"><a class="dropdown-item" href="overview.php">Meine Benutzer</a></li>';
+          echo '<li class="nav-item"><a class="dropdown-item" href="password.php">Passwort ändern</a></li>';
+          echo '<li class="nav-item"><a class="dropdown-item" href="./logout.php">Logout</a></li>';
         }
         ?>
       </ul>
     </div>
   </nav>
+
   <div class="container">
     <?php
     $id = htmlspecialchars($_GET["id"]);
@@ -160,7 +167,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
     $result = $mysqli->query($query);
     $User = $result->fetch_assoc();
     if (!isset($User['username'])) {
-      header('Location: /151_projektarbeit/overview.php');
+      header('Location: overview.php');
     }
 
 
@@ -196,7 +203,7 @@ if (isset($_POST['id']) and is_numeric($_POST['id'])) {
         <input type="text" name="username" class="form-control" id="username" value="<?php echo htmlspecialchars($User['username']) ?>" pattern="(?=.*[a-z])(?=.*[A-Z])[a-zA-Z]{6,}" title="Gross- und Keinbuchstaben, min 6 Zeichen." maxlength="30" required>
       </div>
       <!-- Send / Reset -->
-      <button type="submit" name="button" value="submit" class="btn btn-info">Senden</button>
+      <button type="submit" name="button" value="submit" class="btn btn-info">Ändern</button>
       <input type="button" value="Zurück" onclick="history.back() " class="btn btn-warning">
       <!-- Hidden ID -->
       <input type="hidden" name="id" value="<?php echo $id ?>">

@@ -6,4 +6,3 @@ $_SESSION = array();
 session_destroy();
 // Weiterleiten auf login.php
 header('Location: login.php');
-?>
