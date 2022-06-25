@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Verbindung schliessen
             $mysqli->close();
             // Weiterleiten auf login.php
-            header('Location: /151_projektarbeit/admin.php');
+            header('Location: admin.php');
             // beenden des Scriptes
             exit();
         }
